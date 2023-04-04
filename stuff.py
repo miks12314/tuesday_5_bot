@@ -2,6 +2,7 @@ import requests as r
 import geopy
 import os
 from datetime import datetime
+import sqlite3
 
 
 def git_search(query, language='python'):
@@ -41,3 +42,20 @@ def get_forecast(lat, lon):
     }
     resp = r.get(url, params=params).json()
     return resp
+
+
+
+def connect_db():
+    con = sqlite3.connect('bot_db.sqlite')
+    return con
+
+
+def add_user(f_name,l_name,tg_id,phone,connection):
+    sql = f'''INSERT INTO users (first_name, last_name, tg_id, phone_number)
+              VALUE ({f_name},{l_name},{tg_id},{phone})'''
+    try:
+        curs = connection.cursor()
+        curs.execute(sql)
+        return 0
+    except:
+        return None
